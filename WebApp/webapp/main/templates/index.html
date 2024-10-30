@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="header">
+        <img src="logo.svg" alt="">
+    </div>
+    <div class="content">
+        <div class="custom-select-container">
+            <select id="location-select" class="custom-select">
+                {% for reseption in reseptions %}
+                    <option value="person{{ reseption.num }}">{{ reseption.doctor_fio }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="custom-select-container mb20">
+            <select id="location-select" class="custom-select">
+                {% for reseption in reseptions %}
+                    <option value="{{ reseption.clinic }}">{{ reseption.clinic }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="buttons">
+            <button class="inactive" onclick="showPopup();">Заказать звонок</button>
+            <button class="active" onclick="Telegram.WebApp.showAlert('Справка заказана');">Заказать справку</button>
+        </div>
+        <div class="accounts">
+            <div class="account personal">
+                <span class="account-title">Личный счёт</span>
+                <span class="account-balance"></span>
+            </div>
+            <div class="account family">
+                <span class="account-title">Семейный счёт</span>
+                <span class="account-balance">50 270.00</span>
+            </div>
+        </div>
+        <div class="appointments">
+            <div class="upcoming">
+                <h3>Будущие приёмы</h3>
+                {% for reseption in reseptions %}
+                {% if reseption.count_day >= 0 %}
+                <div class="appointment_next">
+                    <div>
+                        <div>{{ reseption.start_time }} - {{ reseption.end_time }}</div>
+                        <div>Врач: {{ reseption.doctor_fio }}</div>
+                    </div>
+                    <div>{{ reseption.count_day }} д.</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+            <div class="past">
+                <h3>Завершённые приёмы</h3>
+                {% for reseption in reseptions %}
+                {% if reseption.count_day < 0 %}
+                <div class="appointment_past">
+                    <div>
+                        <div>{{ reseption.start_time }} - {{ reseption.end_time }}</div>
+                        <div>Врач: {{ reseption.doctor_fio }}</div>
+                    </div>
+                    <div>{{ reseption.count_day }} д.</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+        // Init TWA
+        Telegram.WebApp.ready();
+
+        // Event occurs whenever theme settings are changed in the user's Telegram app (including switching to night mode).
+        Telegram.WebApp.onEvent('themeChanged', function() {
+            document.documentElement.className = Telegram.WebApp.colorScheme;
+        });
+
+        // Show main button
+        Telegram.WebApp.MainButton.setParams({
+            text: 'Выход'
+        });
+        Telegram.WebApp.MainButton.onClick(function () {
+            Telegram.WebApp.close()
+        });
+        Telegram.WebApp.MainButton.show();
+
+        // Function to call showPopup API
+        function showPopup() {
+            Telegram.WebApp.showPopup({
+                title: 'Заказать звонок',
+                message: 'Администратор клиники перезвонит вам в течение 5 минут',
+                buttons: [
+                    {id: 'link', type: 'default', text: 'Перезвоните мне'},
+                    {type: 'cancel', text: 'Отмена'},
+                ]
+            }, function(btn) {
+                if (btn === 'hehehe') {
+                    Telegram.WebApp.openLink('https://ton.org/');
+                }
+            });
+        };
+
+        // Function to toggle main TWA button
+        function toggleMainButton() {
+            if (Telegram.WebApp.MainButton.isVisible) {
+                Telegram.WebApp.MainButton.hide();
+            } else {
+                Telegram.WebApp.MainButton.show();
+            }
+        };
+
+        function setViewportData() {
+            var sizeEl = document.getElementById('viewport-params-size');
+            sizeEl.innerText = 'width: ' + window.innerWidth + ' x ' +
+                'height: ' + Telegram.WebApp.viewportStableHeight;
+
+            var expandEl = document.querySelector('#viewport-params-expand');
+            expandEl.innerText = 'Is Expanded: ' + (Telegram.WebApp.isExpanded ? 'true' : 'false');
+        }
+
+        Telegram.WebApp.setHeaderColor('secondary_bg_color');
+
+        setViewportData();
+        Telegram.WebApp.onEvent('viewportChanged', setViewportData);
+
+        Telegram.WebApp.onEvent('themeChanged', function() {
+            document.body.setAttribute('style', '--bg-color:' + Telegram.WebApp.backgroundColor);
+        });
+</script>
+{% endblock content %}

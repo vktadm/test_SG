@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ренидент</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <div> Привет, {{ user.username }}</div>
+          <a href="{% url 'logout' %}">Выйти из ЛК</a>
+    {% else %}
+          <a href="{% url 'login' %}">Войти в личный кабинет</a>
+    {% endif %}
+{% block content %}{% endblock content %}
+</body>
+</html>
