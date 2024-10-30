@@ -75,7 +75,6 @@ WHERE StartDateTime IN (
     FROM Receptions
     GROUP BY ID_Patient);
 ```
-Дублирование 
 ***
 ### 3.2 Web-приложение
 1. [Подготовка данных](https://github.com/vktadm/test_SG/blob/master/WebApp/webapp/main/prepare_data.py)
